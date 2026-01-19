@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { hotels } from "@/data/hotels"
 import { useBooking } from "@/context/BookingContext"
+import { useAuth } from "@/context/AuthContext"
 import HotelParallax from "@/components/parallax/HotelParallax"
 import { useState } from "react"
 
@@ -11,6 +12,7 @@ export default function HotelDetailsPage() {
   const router = useRouter()
   const hotel = hotels.find(h => String(h.id) === String(id))
   const { addBooking } = useBooking()
+  const { user } = useAuth()
 
   if (!hotel) {
     return <div className="text-center mt-20">Hotel not found</div>
@@ -22,6 +24,7 @@ export default function HotelDetailsPage() {
   const [checkIn, setCheckIn] = useState("")
   const [checkOut, setCheckOut] = useState("")
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState("")
 
   const nights =
     checkIn && checkOut
@@ -36,6 +39,12 @@ export default function HotelDetailsPage() {
     nights * room.price * roomsCount
 
   const handleBooking = () => {
+    if (!user) {
+      setError("Please login or signup to book")
+      setTimeout(() => router.push("/login"), 1200)
+      return
+    }
+
     if (!checkIn || !checkOut) return
 
     addBooking({
@@ -57,12 +66,10 @@ export default function HotelDetailsPage() {
   return (
     <div className="space-y-20">
 
-      {/* 🌄 PARALLAX */}
       <HotelParallax images={hotel.images} title={hotel.name} />
 
       <div className="max-w-5xl mx-auto px-4 space-y-12">
 
-        {/* TITLE */}
         <div>
           <h2 className="text-4xl font-bold">{hotel.name}</h2>
           <p className="text-gray-500">
@@ -70,7 +77,6 @@ export default function HotelDetailsPage() {
           </p>
         </div>
 
-        {/* AMENITIES */}
         <div>
           <h3 className="text-2xl font-semibold mb-4">Amenities</h3>
           <div className="flex flex-wrap gap-3">
@@ -85,10 +91,8 @@ export default function HotelDetailsPage() {
           </div>
         </div>
 
-        {/* ROOM + GUESTS + DATES */}
         <div className="grid md:grid-cols-2 gap-6">
 
-          {/* Room Type */}
           <div>
             <label className="block mb-2 font-medium">Room Type</label>
             <select
@@ -107,7 +111,6 @@ export default function HotelDetailsPage() {
             </select>
           </div>
 
-          {/* Rooms Count */}
           <div>
             <label className="block mb-2 font-medium">Number of Rooms</label>
             <input
@@ -119,7 +122,6 @@ export default function HotelDetailsPage() {
             />
           </div>
 
-          {/* Guests */}
           <div>
             <label className="block mb-2 font-medium">Guests</label>
             <input
@@ -131,7 +133,6 @@ export default function HotelDetailsPage() {
             />
           </div>
 
-          {/* Check-in */}
           <div>
             <label className="block mb-2 font-medium">Check-in</label>
             <input
@@ -141,7 +142,6 @@ export default function HotelDetailsPage() {
             />
           </div>
 
-          {/* Check-out */}
           <div>
             <label className="block mb-2 font-medium">Check-out</label>
             <input
@@ -153,7 +153,6 @@ export default function HotelDetailsPage() {
 
         </div>
 
-        {/* PRICE SUMMARY */}
         {nights > 0 && (
           <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl space-y-2">
             <p>Nights: {nights}</p>
@@ -166,7 +165,6 @@ export default function HotelDetailsPage() {
           </div>
         )}
 
-        {/* BOOK */}
         <div className="flex flex-col items-end">
           <button
             onClick={handleBooking}
@@ -176,14 +174,17 @@ export default function HotelDetailsPage() {
             Book Now
           </button>
 
+          {error && (
+            <p className="text-red-600 mt-2">{error}</p>
+          )}
+
           {success && (
             <p className="text-green-600 mt-2">
-              ✅ Booking successful! Redirecting…
+              Booking successful! Redirecting…
             </p>
           )}
         </div>
 
-        {/* MAP */}
         <div>
           <h3 className="text-2xl font-semibold mb-4">Location</h3>
           <iframe
@@ -193,7 +194,6 @@ export default function HotelDetailsPage() {
           />
         </div>
 
-        {/* REVIEWS */}
         <div>
           <h3 className="text-2xl font-semibold mb-4">Guest Reviews</h3>
           {hotel.reviews.map((r, i) => (

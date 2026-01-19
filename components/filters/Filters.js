@@ -23,13 +23,13 @@ export default function Filters({
   return (
     <div className="space-y-6">
 
-      {/* PRICE */}
+
       <div>
         <label className="font-semibold block mb-1">Max Price</label>
         <input
           type="range"
           min="1000"
-          max="10000"
+          max="100000"
           step="500"
           value={maxPrice}
           onChange={e => setMaxPrice(Number(e.target.value))}
@@ -38,7 +38,7 @@ export default function Filters({
         <p className="text-sm text-gray-500">₹{maxPrice}</p>
       </div>
 
-      {/* RATING */}
+  
       <div>
         <label className="font-semibold block mb-1">Minimum Rating</label>
         <select
@@ -52,7 +52,7 @@ export default function Filters({
         </select>
       </div>
 
-      {/* PROPERTY TYPE */}
+  
       <div>
         <label className="font-semibold block mb-1">Property Type</label>
         <select
@@ -67,7 +67,7 @@ export default function Filters({
         </select>
       </div>
 
-      {/* AMENITIES */}
+     
       <div>
         <label className="font-semibold block mb-2">Amenities</label>
         {["WiFi", "Pool", "Parking", "AC"].map(a => (
@@ -82,7 +82,6 @@ export default function Filters({
         ))}
       </div>
 
-      {/* SORT */}
       <div>
         <label className="font-semibold block mb-1">Sort By</label>
         <select

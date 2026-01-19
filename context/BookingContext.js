@@ -1,37 +1,59 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
+import { useAuth } from "./AuthContext"
 
 const BookingContext = createContext()
 
 export function BookingProvider({ children }) {
+  const { user } = useAuth()
   const [bookings, setBookings] = useState([])
 
+  // 🔄 Load bookings when user changes
   useEffect(() => {
-    const saved = localStorage.getItem("bookings")
-    if (saved) setBookings(JSON.parse(saved))
-  }, [])
+    if (!user) {
+      setBookings([])
+      return
+    }
 
-  useEffect(() => {
-    localStorage.setItem("bookings", JSON.stringify(bookings))
-  }, [bookings])
+    const stored = localStorage.getItem(
+      `bookings_${user.username}`
+    )
+
+    setBookings(stored ? JSON.parse(stored) : [])
+  }, [user])
+
+  const saveBookings = updated => {
+    if (!user) return
+    setBookings(updated)
+    localStorage.setItem(
+      `bookings_${user.username}`,
+      JSON.stringify(updated)
+    )
+  }
 
   const addBooking = booking => {
-    setBookings(prev => [...prev, booking])
+    const updated = [...bookings, booking]
+    saveBookings(updated)
   }
 
   const cancelBooking = id => {
-    setBookings(prev => prev.filter(b => b.id !== id))
+    const updated = bookings.filter(b => b.id !== id)
+    saveBookings(updated)
   }
 
   const clearBookings = () => {
-    setBookings([])
-    localStorage.removeItem("bookings")
+    saveBookings([])
   }
 
   return (
     <BookingContext.Provider
-      value={{ bookings, addBooking, cancelBooking, clearBookings }}
+      value={{
+        bookings,
+        addBooking,
+        cancelBooking,
+        clearBookings,
+      }}
     >
       {children}
     </BookingContext.Provider>
