@@ -1,51 +1,49 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
+import { useState } from "react"
 import { hotels } from "@/data/hotels"
 import { useBooking } from "@/context/BookingContext"
 import { useAuth } from "@/context/AuthContext"
 import HotelParallax from "@/components/parallax/HotelParallax"
-import { useState } from "react"
 
 export default function HotelDetailsPage() {
   const { id } = useParams()
   const router = useRouter()
+
   const hotel = hotels.find(h => String(h.id) === String(id))
   const { addBooking } = useBooking()
   const { user } = useAuth()
 
-  if (!hotel) {
-    return <div className="text-center mt-20">Hotel not found</div>
-  }
-
-  const [room, setRoom] = useState(hotel.rooms[0])
+  const [room, setRoom] = useState(hotel?.rooms[0])
   const [roomsCount, setRoomsCount] = useState(1)
   const [guests, setGuests] = useState(2)
   const [checkIn, setCheckIn] = useState("")
   const [checkOut, setCheckOut] = useState("")
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState("")
+  const [loginError, setLoginError] = useState("")
+
+  if (!hotel) {
+    return <div className="text-center mt-20">Hotel not found</div>
+  }
 
   const nights =
-    checkIn && checkOut
-      ? Math.max(
-          1,
+    checkIn && checkOut && new Date(checkOut) > new Date(checkIn)
+      ? Math.ceil(
           (new Date(checkOut) - new Date(checkIn)) /
             (1000 * 60 * 60 * 24)
         )
       : 0
 
-  const totalPrice =
-    nights * room.price * roomsCount
+  const totalPrice = nights * room.price * roomsCount
 
   const handleBooking = () => {
     if (!user) {
-      setError("Please login or signup to book")
-      setTimeout(() => router.push("/login"), 1200)
+      setLoginError("Please login or signup to book this hotel")
       return
     }
 
-    if (!checkIn || !checkOut) return
+    if (!checkIn || !checkOut || nights <= 0) return
 
     addBooking({
       id: Date.now(),
@@ -59,8 +57,12 @@ export default function HotelDetailsPage() {
       price: totalPrice,
     })
 
+    setLoginError("")
     setSuccess(true)
-    setTimeout(() => router.push("/bookings"), 1200)
+
+    setTimeout(() => {
+      router.push("/bookings")
+    }, 1200)
   }
 
   return (
@@ -97,7 +99,8 @@ export default function HotelDetailsPage() {
             <label className="block mb-2 font-medium">Room Type</label>
             <select
               className="w-full border p-3 rounded"
-              onChange={(e) =>
+              value={room.type}
+              onChange={e =>
                 setRoom(
                   hotel.rooms.find(r => r.type === e.target.value)
                 )
@@ -137,8 +140,12 @@ export default function HotelDetailsPage() {
             <label className="block mb-2 font-medium">Check-in</label>
             <input
               type="date"
+              value={checkIn}
+              onChange={e => {
+                setCheckIn(e.target.value)
+                setCheckOut("")
+              }}
               className="w-full border p-3 rounded"
-              onChange={e => setCheckIn(e.target.value)}
             />
           </div>
 
@@ -146,8 +153,10 @@ export default function HotelDetailsPage() {
             <label className="block mb-2 font-medium">Check-out</label>
             <input
               type="date"
-              className="w-full border p-3 rounded"
+              min={checkIn}
+              value={checkOut}
               onChange={e => setCheckOut(e.target.value)}
+              className="w-full border p-3 rounded"
             />
           </div>
 
@@ -166,21 +175,24 @@ export default function HotelDetailsPage() {
         )}
 
         <div className="flex flex-col items-end">
+
+          {loginError && (
+            <p className="text-red-600 text-sm mb-2">
+              {loginError}
+            </p>
+          )}
+
           <button
             onClick={handleBooking}
-            disabled={!checkIn || !checkOut}
+            disabled={!checkIn || !checkOut || nights <= 0}
             className="bg-red-600 text-white px-8 py-3 rounded-lg disabled:opacity-50"
           >
             Book Now
           </button>
 
-          {error && (
-            <p className="text-red-600 mt-2">{error}</p>
-          )}
-
           {success && (
             <p className="text-green-600 mt-2">
-              Booking successful! Redirecting…
+              ✅ Booking successful! Redirecting…
             </p>
           )}
         </div>

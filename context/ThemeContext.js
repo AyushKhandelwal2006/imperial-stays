@@ -8,12 +8,22 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("light")
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme")
-    if (saved) setTheme(saved)
+    const stored = localStorage.getItem("theme")
+    if (stored) setTheme(stored)
   }, [])
 
   useEffect(() => {
-    document.documentElement.className = theme
+    const root = document.documentElement
+    root.classList.remove("light", "dark", "royal")
+
+    if (theme === "dark") {
+      root.classList.add("dark")
+    } else if (theme === "royal") {
+      root.classList.add("royal")
+    } else {
+      root.classList.add("light")
+    }
+
     localStorage.setItem("theme", theme)
   }, [theme])
 
@@ -24,6 +34,4 @@ export function ThemeProvider({ children }) {
   )
 }
 
-export function useTheme() {
-  return useContext(ThemeContext)
-}
+export const useTheme = () => useContext(ThemeContext)

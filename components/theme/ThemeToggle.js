@@ -6,11 +6,14 @@ export default function ThemeToggle() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="px-3 py-1 rounded bg-primary text-white"
+    <select
+      value={theme}
+      onChange={(e) => setTheme(e.target.value)}
+      className="theme-select"
     >
-      {theme === "light" ? "Dark" : "Light"}
-    </button>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      <option value="royal">Royal</option>
+    </select>
   )
 }

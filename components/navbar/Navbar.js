@@ -2,48 +2,49 @@
 
 import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
-import { useTheme } from "@/context/ThemeContext"
+import ThemeToggle from "@/components/theme/ThemeToggle"
 
 export default function Navbar() {
   const { user, logout } = useAuth()
-  const { theme, setTheme } = useTheme()
 
   return (
-    <nav className="sticky top-0 z-50 bg-white dark:bg-black border-b">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-red-700">
+    <header className="sticky top-0 z-50 backdrop-blur bg-white/80 dark:bg-[#0b0e1a]/80 border-b border-black/5">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+
+        <Link href="/" className="brand-text">
           Imperial Stays
         </Link>
 
-        <div className="flex items-center gap-6">
-          <Link href="/hotels">Hotels</Link>
+        <nav className="flex items-center gap-3">
 
-          {user && <Link href="/bookings">My Bookings</Link>}
-          {user && <Link href="/profile">Profile</Link>}
+          <Link href="/hotels" className="nav-btn">
+            Hotels
+          </Link>
 
-          {!user ? (
-            <Link
-              href="/login"
-              className="px-4 py-2 bg-red-700 text-white rounded"
-            >
-              Login
+          {user && (
+            <Link href="/bookings" className="nav-btn">
+              My Bookings
             </Link>
-          ) : (
-            <button onClick={logout} className="text-red-600">
-              Logout
-            </button>
           )}
 
-          <button
-            onClick={() =>
-              setTheme(theme === "light" ? "dark" : "light")
-            }
-            className="border px-3 py-1 rounded"
-          >
-            {theme === "light" ? "Dark" : "Light"}
-          </button>
-        </div>
+          {user ? (
+            <>
+              <Link href="/profile" className="nav-btn">
+                Profile
+              </Link>
+              <button onClick={logout} className="nav-btn">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link href="/login" className="nav-login">
+              Login
+            </Link>
+          )}
+
+          <ThemeToggle />
+        </nav>
       </div>
-    </nav>
+    </header>
   )
 }
