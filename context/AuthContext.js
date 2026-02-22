@@ -1,70 +1,50 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
+import {
+  loginUser,
+  registerUser,
+  getCurrentUser,
+} from "@/lib/auth"
 
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
+  // 🔥 Check if user already logged in (via cookie)
   useEffect(() => {
-    const stored = localStorage.getItem("auth_user")
-    if (stored) {
-      setUser(JSON.parse(stored))
+    async function fetchUser() {
+      try {
+        const currentUser = await getCurrentUser()
+        if (currentUser) {
+          setUser(currentUser)
+        }
+      } catch (error) {
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchUser()
   }, [])
 
-  const signup = (username, password) => {
-    const users =
-      JSON.parse(localStorage.getItem("users")) || []
-
-    const exists = users.find(
-      u => u.username === username
-    )
-
-    if (exists) {
-      throw new Error("User already exists")
-    }
-
-    const newUser = { username, password }
-
-    localStorage.setItem(
-      "users",
-      JSON.stringify([...users, newUser])
-    )
-
-    localStorage.setItem(
-      "auth_user",
-      JSON.stringify(newUser)
-    )
-
-    setUser(newUser)
+  const signup = async (name, email, password) => {
+    await registerUser({ name, email, password })
+    await login(email, password)
   }
 
-  const login = (username, password) => {
-    const users =
-      JSON.parse(localStorage.getItem("users")) || []
+  const login = async (email, password) => {
+    await loginUser({ email, password })
 
-    const found = users.find(
-      u =>
-        u.username === username &&
-        u.password === password
-    )
-
-    if (!found) {
-      throw new Error("Invalid credentials")
-    }
-
-    localStorage.setItem(
-      "auth_user",
-      JSON.stringify(found)
-    )
-
-    setUser(found)
+    const currentUser = await getCurrentUser()
+    setUser(currentUser)
   }
 
-  const logout = () => {
-    localStorage.removeItem("auth_user")
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" })
     setUser(null)
   }
 
@@ -75,6 +55,7 @@ export function AuthProvider({ children }) {
         signup,
         login,
         logout,
+        loading,
       }}
     >
       {children}
