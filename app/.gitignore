@@ -60,3 +60,6 @@ coverage/
 # PDF / Generated files (optional)
 # =========================
 public/generated/
+
+
+.env.local
