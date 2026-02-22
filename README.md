@@ -221,7 +221,7 @@ I have also worked on several frontend-focused projects showcasing animations, 3
 <h2>👨‍💻 AUTHOR</h2>
 
 <b>Ayush Khandelwal</b>  
-Frontend Developer | GDSC Aspirant | UI/UX Enthusiast  
+Frontend Developer | UI/UX Enthusiast  
 
 Built with ❤️, patience, debugging, and passion for clean design.
 
