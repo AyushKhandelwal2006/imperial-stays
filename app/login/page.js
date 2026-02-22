@@ -9,17 +9,17 @@ export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
 
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
   const submit = async e => {
     e.preventDefault()
     try {
-      await login(email, password)
+      await login(username, password)
       router.push("/profile")
-    } catch (err) {
-      setError(err.message)
+    } catch {
+      setError("Invalid credentials")
     }
   }
 
@@ -27,7 +27,7 @@ export default function LoginPage() {
     <div className="min-h-[70vh] flex items-center justify-center px-4">
       <form
         onSubmit={submit}
-        className="w-full max-w-sm space-y-4 border rounded-xl p-6 bg-white"
+        className="w-full max-w-sm space-y-4 border border-gray-200 dark:border-gray-700 rounded-xl p-6 bg-white dark:bg-gray-900"
       >
         <h1 className="text-2xl font-bold text-center">Login</h1>
 
@@ -36,33 +36,31 @@ export default function LoginPage() {
         )}
 
         <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border rounded"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
+          placeholder="Username"
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-amber-600"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-amber-600"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          required
         />
 
+        {/* ✅ FIXED LOGIN BUTTON */}
         <button
           type="submit"
-          className="w-full py-2 bg-black text-white rounded"
+          className="login-submit-btn w-full py-2 rounded-md font-semibold"
         >
           Login
         </button>
 
         <p className="text-center text-sm">
           No account?{" "}
-          <Link href="/signup" className="underline">
+          <Link href="/signup" className="underline font-medium">
             Sign up
           </Link>
         </p>
@@ -70,3 +68,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
