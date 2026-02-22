@@ -50,7 +50,6 @@ export default function LoginPage() {
           onChange={e => setPassword(e.target.value)}
         />
 
-        {/* ✅ FIXED LOGIN BUTTON */}
         <button
           type="submit"
           className="login-submit-btn w-full py-2 rounded-md font-semibold"

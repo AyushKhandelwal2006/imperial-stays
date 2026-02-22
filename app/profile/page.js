@@ -10,10 +10,10 @@ export default function ProfilePage() {
   return (
     <main className="bg-[#faf7f2] min-h-screen">
 
-      {/* 🌄 PARALLAX HERO */}
+      
       <section className="relative h-[60vh] overflow-hidden">
 
-        {/* BACKGROUND IMAGE */}
+        
         <div
           className="absolute inset-0 bg-cover bg-center will-change-transform"
           style={{
@@ -21,10 +21,10 @@ export default function ProfilePage() {
           }}
         />
 
-        {/* DARK OVERLAY */}
+       
         <div className="absolute inset-0 bg-black/50" />
 
-        {/* TEXT */}
+       
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
           <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">
             My Profile
@@ -35,7 +35,7 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      {/* 👤 PROFILE CARD */}
+     
       <section className="max-w-4xl mx-auto px-6 py-16">
         <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-md space-y-4">
           <p className="text-lg">
