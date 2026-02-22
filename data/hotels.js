@@ -197,6 +197,31 @@ export const hotels = [
     { user: "Rajat", rating: 5, comment: "Pure royal experience!" },
     { user: "Isha", rating: 4, comment: "Amazing lake view and hospitality." },
   ],
+},
+
+ {
+  id: "9",
+  name: "Taj Lake Palace",
+  city: "Udaipur",
+  type: "Heritage Palace",
+  price: 68400,
+  rating: 4.8,
+  reviewsCount: 640,
+  amenities: ["WiFi", "Pool", "Parking", "AC", "Lake View", "Spa"],
+  images: [
+    "/images/Lakeview.png",
+    "/images/Lakeviewlooby.png",
+    "/images/Lakeviewroom.png",
+  ],
+  location: { lat: 24.575553, lng: 73.679997 },
+  rooms: [
+    { type: "Garden View", price: 68400 },
+    { type: "Lake View", price: 80000 },
+  ],
+  reviews: [
+    { user: "Jitendra", rating: 5, comment: "stay was very comfortable and activities were also good at the Hotel" },
+    { user: "Ishan", rating: 4.8, comment: "Amazing lake view and hospitality." },
+  ],
 }
 
 ]
